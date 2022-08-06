@@ -10,8 +10,10 @@ import (
 
 type (
 	Dao interface {
+		// Get Account repository
 		Account() repository.Account
 
+		// Clear ALl date in DB
 		InitAll() error
 	}
 
