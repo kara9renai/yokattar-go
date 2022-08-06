@@ -56,7 +56,7 @@ func (_mysql) Location() *time.Location {
 	return loc
 }
 
-func (_mysql) MySQLConfig() *mysql.Config {
+func MySQLConfig() *mysql.Config {
 	cfg := mysql.NewConfig()
 
 	cfg.ParseTime = true
