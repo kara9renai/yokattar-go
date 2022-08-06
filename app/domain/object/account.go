@@ -26,7 +26,7 @@ type (
 
 		Note *string `json:"note,omitempty"`
 
-		// CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
+		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
 	}
 )
 
