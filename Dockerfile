@@ -1,6 +1,6 @@
 # dev, builder
 FROM golang:1.16 AS golang
-WORKDIR /work/yokottar-go
+WORKDIR /work/yokattar-go
 
 # dev
 FROM golang as dev
@@ -15,6 +15,6 @@ RUN make prepare build-linux
 FROM alpine AS app
 RUN apk --no-cache add tzdata && \
     cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-COPY --from=builder /work/yokottar-go/build/yokattar-go-linux-amd64 /usr/local/bin/yokattar-go
+COPY --from=builder /work/yokattar-go/build/yokattar-go-linux-amd64 /usr/local/bin/yokattar-go
 EXPOSE 8080
 ENTRYPOINT ["yokattar-go"]
