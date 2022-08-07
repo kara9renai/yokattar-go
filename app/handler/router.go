@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kara9renai/yokattar-go/app/app"
+	"github.com/kara9renai/yokattar-go/app/handler/health"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-	"github.com/kara9renai/yokattar-go/app/app"
-	"github.com/kara9renai/yokattar-go/app/handler/health"
 )
 
 func NewRouter(app *app.App) http.Handler {
