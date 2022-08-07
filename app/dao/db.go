@@ -11,7 +11,7 @@ type DBConfig interface {
 }
 
 func initDb(config DBConfig) (*sqlx.DB, error) {
-	driverName := config.FormatDSN()
+	driverName := "mysql"
 	db, err := sqlx.Open(driverName, config.FormatDSN())
 	if err != nil {
 		return nil, fmt.Errorf("sqlx Open failed: %w", err)
