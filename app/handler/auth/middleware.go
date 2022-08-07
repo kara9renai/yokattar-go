@@ -10,7 +10,7 @@ import (
 	"github.com/kara9renai/yokattar-go/app/handler/httperror"
 )
 
-var contextKey = new(struct{})
+var contextKey struct{}
 
 func Middleware(app *app.App) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
