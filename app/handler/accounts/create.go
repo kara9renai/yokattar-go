@@ -9,11 +9,17 @@ import (
 )
 
 type AddRequest struct {
-	Username string
-	Password string
+	Username    string
+	Password    string
+	DisplayName *string
+	Avatar      *string
+	Header      *string
+	Note        *string
 }
 
+// Handle Request for POST /v1/accounts
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 
 	var req AddRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -21,13 +27,25 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	account := new(object.Account)
+
 	account.Username = req.Username
+	account.DisplayName = req.DisplayName
+	account.Avatar = req.Avatar
+	account.Header = req.Header
+	account.Note = req.Note
+
 	if err := account.SetPassword(req.Password); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
-	_ = h.app.Dao.Account()
-	panic("Must Implement Account Registration")
+
+	a := h.app.Dao.Account()
+
+	account, err := a.CreateAccount(ctx, account)
+	if err != nil {
+		httperror.InternalServerError(w, err)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(account); err != nil {

@@ -4,6 +4,7 @@ CREATE TABLE `account` (
     `password_hash` varchar(255) NOT NULL,
     `display_name` varchar(255),
     `avatar` text,
+    `header` text,
     `note` text,
     `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY kEY (`id`)
