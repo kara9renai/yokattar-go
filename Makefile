@@ -53,3 +53,6 @@ up:
 
 reset-mysql:
 	rm -rfd .data/mysql && make up
+
+mysql:
+	docker compose exec mysql bin/bash -c 'mysql -u$$MYSQL_USER -p$$MYSQL_PASSWORD'

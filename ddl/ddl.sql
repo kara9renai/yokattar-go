@@ -7,7 +7,7 @@ CREATE TABLE `account` (
     `header` text,
     `note` text,
     `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY kEY (`id`)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `status` (
@@ -17,5 +17,5 @@ CREATE TABLE `status` (
     `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     INDEX `idx_account_id` (`account_id`),
-    CONSTRAINT `fk_status_account_id` FOREIGN_KEY (`account_id`) REFERENCES `account` (`id`)
-)
+    CONSTRAINT `fk_status_account_id` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+);
