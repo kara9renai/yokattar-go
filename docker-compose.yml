@@ -3,7 +3,6 @@ services:
   mysql:
     image: mysql:5.7
     platform: linux/x86_64
-    command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --default-time-zone='+9:00'"
     ports:
       - "3306:3306"
     environment:
@@ -14,7 +13,7 @@ services:
     volumes:
       - "./.data/mysql:/var/lib/mysql"
       - "./ddl:/docker-entrypoint-initdb.d"
-      - "./my.cnf:/etc/mysql/my.cnf"
+      - "./conf.d/my.cnf:/etc/mysql/my.cnf"
     restart: on-failure
   
   web:
