@@ -7,5 +7,6 @@ import (
 )
 
 type Status interface {
+	// create a status
 	CreateStatus(ctx context.Context, accountId int64, status string) (*object.Status, error)
 }
