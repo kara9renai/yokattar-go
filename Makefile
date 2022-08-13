@@ -42,3 +42,14 @@ clean:
 	git clean -f -X app bin build
 
 .PHONY:	test clean
+
+# for docker compose
+
+stop:
+	docker compose stop
+
+up:
+	docker compose up -d
+
+reset-mysql:
+	rm -rfd .data/mysql && make up
