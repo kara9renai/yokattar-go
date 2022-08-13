@@ -2,7 +2,6 @@ package accounts
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -20,12 +19,6 @@ func (h *handler) Get(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		httperror.InternalServerError(w, err)
-		return
-	}
-
-	if account == nil {
-		err := errors.New("user not found")
-		println(err.Error())
 		return
 	}
 
