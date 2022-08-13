@@ -14,6 +14,7 @@ services:
     volumes:
       - "./.data/mysql:/var/lib/mysql"
       - "./ddl:/docker-entrypoint-initdb.d"
+      - "./my.cnf:/etc/mysql/my.cnf"
     restart: on-failure
   
   web:
