@@ -30,6 +30,17 @@ func (h *handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	a := h.app.Dao.Account() // domain/repositoryの取得
+
+	account, err := a.FindByID(ctx, status.AccountID)
+
+	if err != nil {
+		httperror.InternalServerError(w, err)
+		return
+	}
+
+	status.Account = *account
+
 	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(status); err != nil {
