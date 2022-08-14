@@ -80,3 +80,20 @@ func (r *status) GetStatus(ctx context.Context, id int64) (*object.Status, error
 
 	return entity, nil
 }
+
+func (r *status) DeleteStatus(ctx context.Context, statusId int64) error {
+	const (
+		deleteFmt = `DELETE FROM status WHERE id = ?`
+	)
+
+	_, err := r.db.ExecContext(ctx, deleteFmt, statusId)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil
+		}
+		return fmt.Errorf("%w", err)
+	}
+
+	return nil
+}
