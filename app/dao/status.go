@@ -59,3 +59,24 @@ func (r *status) CreateStatus(ctx context.Context, accountId int64, content stri
 
 	return entity, nil
 }
+
+func (r *status) GetStatus(ctx context.Context, id int64) (*object.Status, error) {
+
+	const (
+		query = `select * from status where id = ?`
+	)
+
+	entity := new(object.Status)
+
+	err := r.db.QueryRowxContext(ctx, query, id).StructScan(entity)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	return entity, nil
+}

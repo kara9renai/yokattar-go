@@ -84,3 +84,23 @@ func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account)
 
 	return entity, nil
 }
+
+func (r *account) FindByID(ctx context.Context, accountId int64) (*object.Account, error) {
+
+	const (
+		query = `SELECT * FROM account where id = ?`
+	)
+
+	entity := new(object.Account)
+
+	err := r.db.QueryRowxContext(ctx, query, accountId).StructScan(entity)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	return entity, nil
+}
