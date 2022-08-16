@@ -1,13 +1,14 @@
 package media
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/kara9renai/yokattar-go/app/handler/httperror"
 )
@@ -50,7 +51,12 @@ func (h *handler) Upload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var n string = fmt.Sprintf(imagePath+"%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename))
+	// URLの擬似乱数文字列を生成
+	c := 40
+	b := make([]byte, c)
+	rand.Read(b)
+
+	var n string = fmt.Sprintf(imagePath+"%v%s", base64.URLEncoding.EncodeToString(b), filepath.Ext(fileHeader.Filename))
 
 	f, err := os.Create(n)
 	if err != nil {
