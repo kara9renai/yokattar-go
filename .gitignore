@@ -13,3 +13,6 @@
 /bin/
 /build/
 /.data/
+
+// 画像ファイルは除外する
+/uploadimages/
