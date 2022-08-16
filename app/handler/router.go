@@ -7,6 +7,7 @@ import (
 	"github.com/kara9renai/yokattar-go/app/app"
 	"github.com/kara9renai/yokattar-go/app/handler/accounts"
 	"github.com/kara9renai/yokattar-go/app/handler/health"
+	"github.com/kara9renai/yokattar-go/app/handler/media"
 	"github.com/kara9renai/yokattar-go/app/handler/statuses"
 
 	"github.com/go-chi/chi"
@@ -28,6 +29,7 @@ func NewRouter(app *app.App) http.Handler {
 	r.Mount("/v1/accounts", accounts.NewRouter(app))
 	r.Mount("/v1/statuses", statuses.NewRouter(app))
 	r.Mount("/v1/health", health.NewRouter())
+	r.Mount("/v1/media", media.NewRouter(app))
 
 	return r
 }
