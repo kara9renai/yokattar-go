@@ -5,3 +5,4 @@
  - [x] POST   /v1/statuses の実装
  - [x] GET    /v1/statuses/:id の実装
  - [x] DELETE /v1/statuses/:id の実装
+ - [x] POST   /v1/media の実装（仮）
