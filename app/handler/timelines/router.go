@@ -16,7 +16,7 @@ func NewRouter(app *app.App) http.Handler {
 
 	h := &handler{app: app}
 
-	r.Get("/public", h.GetPublic)
+	r.Get("/public", h.Public)
 
 	return r
 }
