@@ -30,6 +30,19 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		httperror.InternalServerError(w, err)
 		return
 	}
+
+	if status != nil {
+		a := h.app.Dao.Account()
+		account, err := a.FindByID(ctx, status.AccountID)
+
+		if err != nil {
+			httperror.InternalServerError(w, err)
+			return
+		}
+
+		status.Account = *account
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(status); err != nil {
 		httperror.InternalServerError(w, err)
