@@ -23,3 +23,13 @@ func IDOf(r *http.Request) (int64, error) {
 
 	return id, nil
 }
+
+func URLParamOf(r *http.Request, val string) (int64, error) {
+	a, err := strconv.Atoi(r.URL.Query().Get(val))
+
+	if err != nil {
+		return 0, err
+	}
+
+	return int64(a), nil
+}
