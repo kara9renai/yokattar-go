@@ -29,10 +29,10 @@ type (
 		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
 
 		// フォロワーの数
-		FollowersCount int64 `json:"followers_count"`
+		FollowersCount int64 `json:"followers_count" db:"followers_count"`
 
 		// フォローしているアカウントの数
-		FollowingCount int64 `json:"following_count"`
+		FollowingCount int64 `json:"following_count" db:"following_count"`
 	}
 
 	Relationship struct {
