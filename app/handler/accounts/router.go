@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/kara9renai/yokattar-go/app/app"
+	"github.com/kara9renai/yokattar-go/app/handler/auth"
 )
 
 type handler struct {
@@ -16,5 +17,6 @@ func NewRouter(app *app.App) http.Handler {
 	h := &handler{app: app}
 	r.Post("/", h.Create)
 	r.Get("/{username}", h.Get)
+	r.With(auth.Middleware(app)).Post("/{username}/follow", h.Follow)
 	return r
 }

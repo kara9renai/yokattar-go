@@ -40,9 +40,10 @@ func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account)
 
 	const (
 		insert = `insert into account (
-				username, password_hash, display_name, avatar, header, note
+				username, password_hash, display_name, avatar, header, note,
+				following_count, followers_count
 				)
-				values (?, ?, ?, ?, ?, ?)`
+				values (?, ?, ?, ?, ?, ?, ?, ?)`
 
 		confirm = "select * from account where id = ?"
 	)
@@ -61,7 +62,9 @@ func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account)
 		newAccount.DisplayName,
 		newAccount.Avatar,
 		newAccount.Header,
-		newAccount.Note)
+		newAccount.Note,
+		0,
+		0)
 
 	if err != nil {
 		return nil, err
@@ -103,4 +106,51 @@ func (r *account) FindByID(ctx context.Context, accountId int64) (*object.Accoun
 	}
 
 	return entity, nil
+}
+
+// Follow: followerIdとfolloweeIdからフォロー関係を記録する
+// TODO: ここはトランザクションで書きたい
+func (r *account) Follow(ctx context.Context, followerId int64, followeeId int64) error {
+
+	const (
+		insert = `INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)`
+		update = `UPDATE account a SET following_count = following_count + 1 WHERE id = ?`
+	)
+
+	stmt, err := r.db.PreparexContext(ctx, insert)
+
+	if err != nil {
+		return err
+	}
+
+	if _, err = stmt.ExecContext(ctx, followerId, followeeId); err != nil {
+		return err
+	}
+
+	if _, err = r.db.ExecContext(ctx, update, followerId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// FindRelationByID: followerId(フォローする側のID)とfolloweeId(フォローされる側)から
+// 該当するリレーションを見つける関数
+func (r *account) FindRelationByID(ctx context.Context, followerId int64, followeeId int64) (bool, error) {
+
+	const (
+		query = `SELECT * FROM relation WHERE follower_id = ? AND followee_id = ?`
+	)
+
+	rows, err := r.db.QueryxContext(ctx, query, followerId, followeeId)
+
+	if err != nil {
+		return false, nil
+	}
+
+	if rows.Next() {
+		return true, nil
+	} else {
+		return false, nil
+	}
 }
