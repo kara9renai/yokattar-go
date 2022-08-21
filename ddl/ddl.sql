@@ -7,6 +7,8 @@ CREATE TABLE `account` (
     `header` text,
     `note` text,
     `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `followers_count` bigint(20) DEFAULT 0,
+    `following_count` bigint(20) DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
@@ -21,9 +23,9 @@ CREATE TABLE `status` (
 );
 
 CREATE TABLE `relation` (
-    `id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `following_id` bigint(20) NOT NULL,
     `follower_id` bigint(20) NOT NULL,
-    CONSTRAINT `fk_relation_follower_id` FOREIGN KEY (`following_id`) REFERENCES `account` (`id`),
-    CONSTRAINT `fk_relation_following_id` FOREIGN KEY (`follower_id`) REFERENCES `account` (`id`)
+    `followee_id` bigint(20) NOT NULL,
+    CONSTRAINT `fk_relation_follower_id` FOREIGN KEY (`follower_id`) REFERENCES `account` (`id`),
+    CONSTRAINT `fk_relation_followee_id` FOREIGN KEY (`followee_id`) REFERENCES `account` (`id`),
+    PRIMARY KEY (`follower_id`, `followee_id`)
 );
