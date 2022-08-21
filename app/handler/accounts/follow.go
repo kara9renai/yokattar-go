@@ -46,9 +46,6 @@ func (h *handler) Follow(w http.ResponseWriter, r *http.Request) {
 	relation.IsFollowing = flag
 	relation.IsFollowedby = true
 
-	//フォローしている数をインクリメントする
-	followingUser.FollowingCount++
-
 	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(relation); err != nil {

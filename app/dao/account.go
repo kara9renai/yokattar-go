@@ -109,10 +109,12 @@ func (r *account) FindByID(ctx context.Context, accountId int64) (*object.Accoun
 }
 
 // Follow: followerIdとfolloweeIdからフォロー関係を記録する
+// TODO: ここはトランザクションで書きたい
 func (r *account) Follow(ctx context.Context, followerId int64, followeeId int64) error {
 
 	const (
 		insert = `INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)`
+		update = `UPDATE account a SET following_count = following_count + 1 WHERE id = ?`
 	)
 
 	stmt, err := r.db.PreparexContext(ctx, insert)
@@ -122,6 +124,10 @@ func (r *account) Follow(ctx context.Context, followerId int64, followeeId int64
 	}
 
 	if _, err = stmt.ExecContext(ctx, followerId, followeeId); err != nil {
+		return err
+	}
+
+	if _, err = r.db.ExecContext(ctx, update, followerId); err != nil {
 		return err
 	}
 
