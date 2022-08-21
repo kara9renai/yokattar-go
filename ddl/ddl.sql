@@ -24,6 +24,6 @@ CREATE TABLE `relation` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `following_id` bigint(20) NOT NULL,
     `follower_id` bigint(20) NOT NULL,
-    CONSTRAINT `fk_following_account_id` FOREIGN KEY (`following_id`) REFERENCES `account` (`id`),
-    CONSTRAINT `fk_follower_account_id` FOREIGN KEY (`follower_id`) REFERENCES `account` (`id`)
+    CONSTRAINT `fk_relation_follower_id` FOREIGN KEY (`following_id`) REFERENCES `account` (`id`),
+    CONSTRAINT `fk_relation_following_id` FOREIGN KEY (`follower_id`) REFERENCES `account` (`id`)
 );
