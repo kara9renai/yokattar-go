@@ -104,3 +104,44 @@ func (r *account) FindByID(ctx context.Context, accountId int64) (*object.Accoun
 
 	return entity, nil
 }
+
+// Follow: followerIdとfolloweeIdからフォロー関係を記録する
+func (r *account) Follow(ctx context.Context, followerId int64, followeeId int64) error {
+
+	const (
+		insert = `INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)`
+	)
+
+	stmt, err := r.db.PreparexContext(ctx, insert)
+
+	if err != nil {
+		return err
+	}
+
+	if _, err = stmt.ExecContext(ctx, followerId, followeeId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// FindRelationByID: followerId(フォローする側のID)とfolloweeId(フォローされる側)から
+// 該当するリレーションを見つける関数
+func (r *account) FindRelationByID(ctx context.Context, followerId int64, followeeId int64) (bool, error) {
+
+	const (
+		query = `SELECT * FROM relation WHERE follower_id = ? AND followee_id = ?`
+	)
+
+	rows, err := r.db.QueryxContext(ctx, query, followerId, followeeId)
+
+	if err != nil {
+		return false, nil
+	}
+
+	if rows.Next() {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
