@@ -40,9 +40,10 @@ func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account)
 
 	const (
 		insert = `insert into account (
-				username, password_hash, display_name, avatar, header, note
+				username, password_hash, display_name, avatar, header, note,
+				following_count, followers_count
 				)
-				values (?, ?, ?, ?, ?, ?)`
+				values (?, ?, ?, ?, ?, ?, ?, ?)`
 
 		confirm = "select * from account where id = ?"
 	)
@@ -61,7 +62,9 @@ func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account)
 		newAccount.DisplayName,
 		newAccount.Avatar,
 		newAccount.Header,
-		newAccount.Note)
+		newAccount.Note,
+		0,
+		0)
 
 	if err != nil {
 		return nil, err
