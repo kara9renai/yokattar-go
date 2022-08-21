@@ -27,6 +27,20 @@ type (
 		Note *string `json:"note,omitempty"`
 
 		CreateAt DateTime `json:"create_at,omitempty" db:"create_at"`
+
+		// フォロワーの数
+		FollowersCount int64 `json:"followers_count"`
+
+		// フォローしているアカウントの数
+		FollowingCount int64 `json:"following_count"`
+	}
+
+	Relationship struct {
+		ID AccountID `json:"id"`
+
+		IsFollowing bool `json:"following"`
+
+		IsFollowedby bool `json:"followed_by"`
 	}
 )
 
