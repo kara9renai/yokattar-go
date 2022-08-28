@@ -14,4 +14,6 @@ type Account interface {
 	Follow(ctx context.Context, followingId int64, followerId int64) error
 	// impl function to get relationship
 	FindRelationByID(ctx context.Context, followingId int64, followerId int64) (bool, error)
+	// impl function to get  who account is following
+	FindFollowing(ctx context.Context, accountId int64) ([]*object.Account, error)
 }

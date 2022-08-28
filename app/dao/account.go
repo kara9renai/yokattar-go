@@ -154,3 +154,33 @@ func (r *account) FindRelationByID(ctx context.Context, followerId int64, follow
 		return false, nil
 	}
 }
+
+// FindFollowing: パラメータで渡されたaccountがフォローしているaccountを返す関数
+func (r *account) FindFollowing(ctx context.Context, accountId int64) ([]*object.Account, error) {
+
+	var entity []*object.Account
+
+	const sql = `SELECT a.* FROM account a 
+				INNER JOIN relation r
+				ON a.id = r.followee_id
+				WHERE r.follower_id = ?`
+
+	rows, err := r.db.QueryxContext(ctx, sql, accountId)
+
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	for rows.Next() {
+		var a object.Account
+		err = rows.StructScan(&a)
+
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+
+		entity = append(entity, &a)
+	}
+
+	return entity, nil
+}
