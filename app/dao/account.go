@@ -117,17 +117,14 @@ func (r *account) Follow(ctx context.Context, followerId int64, followeeId int64
 		update = `UPDATE account a SET following_count = following_count + 1 WHERE id = ?`
 	)
 
-	stmt, err := r.db.PreparexContext(ctx, insert)
+	tx := r.db.MustBeginTx(ctx, &sql.TxOptions{})
+	defer tx.Rollback()
 
-	if err != nil {
-		return err
-	}
+	tx.MustExecContext(ctx, insert, followerId, followeeId)
 
-	if _, err = stmt.ExecContext(ctx, followerId, followeeId); err != nil {
-		return err
-	}
+	tx.MustExecContext(ctx, update, followerId)
 
-	if _, err = r.db.ExecContext(ctx, update, followerId); err != nil {
+	if err := tx.Commit(); err != nil {
 		return err
 	}
 
