@@ -4,14 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/kara9renai/yokattar-go/app/config"
 	"github.com/kara9renai/yokattar-go/app/handler/httperror"
 	"github.com/kara9renai/yokattar-go/app/handler/request"
-)
-
-const (
-	DEFAULT_LIMIT    = 40
-	DEFAULT_MAX_ID   = 0
-	DEFAULT_SINCE_ID = 0
 )
 
 // Handle Request for `GET /timelines/public`
@@ -21,19 +16,23 @@ func (h *handler) Public(w http.ResponseWriter, r *http.Request) {
 	limit, err := request.URLParamOf(r, "limit")
 
 	if err != nil {
-		limit = DEFAULT_LIMIT
+		limit = config.DEFAULT_LIMIT
+	}
+
+	if limit > config.MAX_LIMIT {
+		limit = config.MAX_LIMIT
 	}
 
 	maxId, err := request.URLParamOf(r, "max_id")
 
 	if err != nil {
-		maxId = DEFAULT_MAX_ID
+		maxId = config.DEFAULT_MAX_ID
 	}
 
 	sinceId, err := request.URLParamOf(r, "since_id")
 
 	if err != nil {
-		sinceId = DEFAULT_SINCE_ID
+		sinceId = config.DEFAULT_SINCE_ID
 	}
 
 	t := h.app.Dao.Timeline()
