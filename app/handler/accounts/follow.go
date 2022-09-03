@@ -35,7 +35,8 @@ func (h *handler) Follow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	flag, err := a.FindRelationByID(ctx, followingUser.ID, followedUser.ID)
+	// フォローする対象が、同時に自分をフォローしているかどうかを確認する
+	flag, err := a.FindRelationByID(ctx, followedUser.ID, followingUser.ID)
 
 	if err != nil {
 		httperror.InternalServerError(w, err)
@@ -43,8 +44,8 @@ func (h *handler) Follow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	relation.ID = followingUser.ID
-	relation.IsFollowing = flag
-	relation.IsFollowedby = true
+	relation.IsFollowing = true
+	relation.IsFollowedby = flag
 
 	w.Header().Set("Content-Type", "application/json")
 
