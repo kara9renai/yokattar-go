@@ -18,4 +18,6 @@ type Account interface {
 	FindFollowing(ctx context.Context, accountId int64, limit int64) ([]*object.Account, error)
 	// impl function to get who account's followers
 	FindFollowers(ctx context.Context, accountId int64, limit int64) ([]*object.Account, error)
+	// impl function to unfollow
+	Unfollow(ctx context.Context, followingId int64, followerId int64) error
 }
