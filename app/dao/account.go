@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kara9renai/yokattar-go/app/domain/object"
@@ -211,4 +212,41 @@ func (r *account) FindFollowers(ctx context.Context, accountId int64, limit int6
 	}
 
 	return entity, nil
+}
+
+// Unfollow: POSTをリクエストしたfollower(フォローする側)が、パラメータで指定されたfollowee(フォローされている側)の
+// フォローを解除する関数
+func (r *account) Unfollow(ctx context.Context, followerId int64, followeeId int64) error {
+
+	const (
+		deleteFmt       = `DELETE FROM relation WHERE follower_id = ? AND followee_id = ?`
+		followingUpdate = `UPDATE account SET following_count = following_count - 1 WHERE id = ?`
+		followersUpdate = `UPDATE account SET followers_count = followers_count - 1 WHERE id = ?`
+	)
+
+	result, err := r.db.ExecContext(ctx, deleteFmt, followerId, followeeId)
+
+	if err != nil {
+		return err
+	}
+
+	log.Println(result.RowsAffected())
+
+	if affected, _ := result.RowsAffected(); affected == 0 {
+		return errors.New("1行も影響を受けていません")
+	}
+
+	_, err = r.db.ExecContext(ctx, followingUpdate, followerId)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.ExecContext(ctx, followersUpdate, followeeId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
