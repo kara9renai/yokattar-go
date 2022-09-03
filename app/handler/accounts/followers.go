@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-chi/chi"
 	"github.com/kara9renai/yokattar-go/app/config"
 	"github.com/kara9renai/yokattar-go/app/handler/httperror"
 	"github.com/kara9renai/yokattar-go/app/handler/request"
@@ -25,7 +24,7 @@ func (h *handler) Followers(w http.ResponseWriter, r *http.Request) {
 		limit = config.MAX_LIMIT
 	}
 
-	username := chi.URLParam(r, "username")
+	username := request.UsernameOf(r)
 
 	a := h.app.Dao.Account() // domain/repository の取得
 
