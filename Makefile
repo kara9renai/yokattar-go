@@ -56,3 +56,29 @@ reset-mysql:
 
 mysql:
 	docker compose exec mysql bin/bash -c 'mysql -u$$MYSQL_USER -p$$MYSQL_PASSWORD'
+
+NAME = Taro
+DNAME = 太郎
+
+create-account:
+	curl -X 'POST' \
+	'http://localhost:8080/v1/accounts' \
+	-H 'accept: application/json' \
+	-H 'Content-Type: application/json' \
+	-d '{ \
+	"username": "${NAME}", \
+	"password": "P@ssw0rd", \
+	"displayName": "${DNAME}", \
+	"avatar": "avatar_pictrue.jpg", \
+	"header": "header_picture.jpg", \
+	"note": "University Student" \
+	}'
+
+FNAME = Saki
+
+follow:
+	curl -X 'POST' \
+	'http://localhost:8080/v1/accounts/${FNAME}/follow' \
+	-H 'accept: application/json' \
+	-H 'Authentication: username ${NAME}' \
+	-d ''
