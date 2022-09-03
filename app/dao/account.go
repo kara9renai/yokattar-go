@@ -182,3 +182,33 @@ func (r *account) FindFollowing(ctx context.Context, accountId int64, limit int6
 
 	return entity, nil
 }
+
+func (r *account) FindFollowers(ctx context.Context, accountId int64, limit int64) ([]*object.Account, error) {
+
+	var entity []*object.Account
+
+	const sql = `SELECT a.* FROM account a
+				INNER JOIN relation r
+				ON a.id = r.follower_id
+				WHERE r.followee_id = ?
+				LIMIT ?`
+
+	rows, err := r.db.QueryxContext(ctx, sql, accountId, limit)
+
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	for rows.Next() {
+		var a object.Account
+		err = rows.StructScan(&a)
+
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+
+		entity = append(entity, &a)
+	}
+
+	return entity, nil
+}
