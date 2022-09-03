@@ -43,18 +43,6 @@ func (h *handler) Followers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// maxId, err := request.URLParamOf(r, "max_id")
-
-	// if err != nil {
-	// 	maxId = config.DEFAULT_MAX_ID
-	// }
-
-	// sinceId, err := request.URLParamOf(r, "since_id")
-
-	// if err != nil {
-	// 	sinceId = config.DEFAULT_SINCE_ID
-	// }
-
 	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(followers); err != nil {
