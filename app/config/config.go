@@ -9,6 +9,12 @@ import (
 const (
 	portKey     = "PORT"
 	defaultPort = 8080
+
+	DEFAULT_LIMIT    = 40
+	DEFAULT_MAX_ID   = 0
+	DEFAULT_SINCE_ID = 0
+
+	MAX_LIMIT = 80
 )
 
 func Port() int {

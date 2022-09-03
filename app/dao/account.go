@@ -153,16 +153,17 @@ func (r *account) FindRelationByID(ctx context.Context, followerId int64, follow
 }
 
 // FindFollowing: パラメータで渡されたaccountがフォローしているaccountを返す関数
-func (r *account) FindFollowing(ctx context.Context, accountId int64) ([]*object.Account, error) {
+func (r *account) FindFollowing(ctx context.Context, accountId int64, limit int64) ([]*object.Account, error) {
 
 	var entity []*object.Account
 
 	const sql = `SELECT a.* FROM account a 
 				INNER JOIN relation r
 				ON a.id = r.followee_id
-				WHERE r.follower_id = ?`
+				WHERE r.follower_id = ?
+				LIMIT ?`
 
-	rows, err := r.db.QueryxContext(ctx, sql, accountId)
+	rows, err := r.db.QueryxContext(ctx, sql, accountId, limit)
 
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
