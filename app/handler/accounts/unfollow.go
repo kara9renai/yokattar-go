@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-chi/chi"
 	"github.com/kara9renai/yokattar-go/app/domain/object"
 	"github.com/kara9renai/yokattar-go/app/handler/auth"
 	"github.com/kara9renai/yokattar-go/app/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/handler/request"
 )
 
 // Handle Request for `POST /accounts/{username}/unfollow`
@@ -17,7 +17,7 @@ func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 
-	username := chi.URLParam(r, "username")
+	username := request.UsernameOf(r)
 
 	unfollowingUser := auth.AccountOf(r)
 
