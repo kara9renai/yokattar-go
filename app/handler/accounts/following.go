@@ -21,6 +21,10 @@ func (h *handler) Following(w http.ResponseWriter, r *http.Request) {
 		limit = config.DEFAULT_LIMIT
 	}
 
+	if limit > config.MAX_LIMIT {
+		limit = config.MAX_LIMIT
+	}
+
 	username := chi.URLParam(r, "username")
 
 	a := h.app.Dao.Account() // domain/repository の取得
