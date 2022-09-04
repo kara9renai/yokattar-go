@@ -114,8 +114,9 @@ func (r *account) FindByID(ctx context.Context, accountId int64) (*object.Accoun
 func (r *account) Follow(ctx context.Context, followerId int64, followeeId int64) error {
 
 	const (
-		insert = `INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)`
-		update = `UPDATE account a SET following_count = following_count + 1 WHERE id = ?`
+		insert          = `INSERT INTO relation (follower_id, followee_id) VALUES (?, ?)`
+		followingUpdate = `UPDATE account a SET following_count = following_count + 1 WHERE id = ?`
+		followersUpdate = `UPDATE account a SET followers_count = followers_count + 1 WHERE id = ?`
 	)
 
 	tx := r.db.MustBeginTx(ctx, &sql.TxOptions{})
@@ -123,7 +124,9 @@ func (r *account) Follow(ctx context.Context, followerId int64, followeeId int64
 
 	tx.MustExecContext(ctx, insert, followerId, followeeId)
 
-	tx.MustExecContext(ctx, update, followerId)
+	tx.MustExecContext(ctx, followingUpdate, followerId)
+
+	tx.MustExecContext(ctx, followersUpdate, followeeId)
 
 	if err := tx.Commit(); err != nil {
 		return err
