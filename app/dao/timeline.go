@@ -90,7 +90,8 @@ func (r *timeline) GetPublic(ctx context.Context, maxId int64, sinceId int64, li
 	return entity, nil
 }
 
-func (r *timeline) GetHome(ctx context.Context, accountId int64, limit int64) ([]*object.Status, error) {
+// GetHome: accountIdがフォローしているユーザーのツイート(Status)を表示する
+func (r *timeline) GetHome(ctx context.Context, accountId int64, maxId, sinceId, limit int64) ([]*object.Status, error) {
 
 	var (
 		entity []*object.Status
@@ -113,28 +114,54 @@ func (r *timeline) GetHome(ctx context.Context, accountId int64, limit int64) ([
 				status.account_id = relation.followee_id
 				LEFT JOIN account ON
 				status.account_id = account.id
-				WHERE relation.follower_id = ?
-				LIMIT ?`
+				WHERE relation.follower_id = ?`
 	)
 
-	rows, err := r.db.QueryxContext(ctx, sql, accountId, limit)
-
-	if err != nil {
-		return nil, fmt.Errorf("%w", err)
-	}
-
-	for rows.Next() {
-		var s object.Status
-		err = rows.StructScan(&s)
+	if maxId == 0 && sinceId == 0 {
+		sql += ` LIMIT ?`
+		rows, err := r.db.QueryxContext(ctx, sql, accountId, limit)
 
 		if err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}
 
-		entity = append(entity, &s)
+		for rows.Next() {
+			var s object.Status
+			err = rows.StructScan(&s)
 
+			if err != nil {
+				return nil, fmt.Errorf("%w", err)
+			}
+
+			entity = append(entity, &s)
+
+		}
+
+		return entity, nil
 	}
 
-	return entity, nil
+	if maxId != 0 || sinceId != 0 {
+		sql += ` AND status.id BETWEEN ? AND ?`
+		rows, err := r.db.QueryxContext(ctx, sql, accountId, maxId, sinceId)
 
+		if err != nil {
+			return nil, fmt.Errorf("%w", err)
+		}
+
+		for rows.Next() {
+			var s object.Status
+			err = rows.StructScan(&s)
+
+			if err != nil {
+				return nil, fmt.Errorf("%w", err)
+			}
+
+			entity = append(entity, &s)
+
+		}
+
+		return entity, nil
+	}
+
+	return []*object.Status{}, nil
 }
