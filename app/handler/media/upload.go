@@ -18,17 +18,10 @@ const (
 	imagePath     = "./uploadimages/"
 )
 
-type AddRequest struct {
-	ID          int64
-	Type        string
-	Url         string
-	Description string
-}
-
 // Handle Request for POST `v1/media`
 func (h *handler) Upload(w http.ResponseWriter, r *http.Request) {
 
-	var req AddRequest
+	ctx := r.Context()
 
 	r.Body = http.MaxBytesReader(w, r.Body, MaxUploadSize)
 
@@ -46,6 +39,7 @@ func (h *handler) Upload(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 
 	err = os.MkdirAll(imagePath, os.ModePerm)
+
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
@@ -56,28 +50,36 @@ func (h *handler) Upload(w http.ResponseWriter, r *http.Request) {
 	b := make([]byte, c)
 	rand.Read(b)
 
-	var n string = fmt.Sprintf(imagePath+"%v%s", base64.URLEncoding.EncodeToString(b), filepath.Ext(fileHeader.Filename))
+	var fileName string = fmt.Sprintf(imagePath+"%v%s", base64.URLEncoding.EncodeToString(b), filepath.Ext(fileHeader.Filename))
 
-	f, err := os.Create(n)
+	f, err := os.Create(fileName)
+
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
+
 	defer f.Close()
 
 	_, err = io.Copy(f, file)
+
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
 
-	req.ID = 123
-	req.Type = filepath.Ext(fileHeader.Filename)
-	req.Url = n
+	at := h.app.Dao.Attachment() // domain/repositoryの取得
+
+	attachment, err := at.UploadFile(ctx, fileName)
+
+	if err != nil {
+		httperror.InternalServerError(w, err)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 
-	if err := json.NewEncoder(w).Encode(req); err != nil {
+	if err := json.NewEncoder(w).Encode(attachment); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
