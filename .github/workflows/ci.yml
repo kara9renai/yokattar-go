@@ -17,7 +17,7 @@ jobs:
       - name: Check if pr exists
         id: check_pr
         run: |
-          pr_title = "test"
+          pr_title="test"
           echo "::set-output name=count::$(gh pr list --search '[Example] Simple demo in:title' -B main | wc -l)"
           echo "::set-output name=pr_title::$pr_title"
 
