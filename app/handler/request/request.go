@@ -37,3 +37,7 @@ func URLParamOf(r *http.Request, val string) (int64, error) {
 func UsernameOf(r *http.Request) string {
 	return chi.URLParam(r, "username")
 }
+
+func Test() string {
+	return "test"
+}
