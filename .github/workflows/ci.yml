@@ -8,10 +8,16 @@ jobs:
   create-pull-request:
     runs-on: ubuntu-latest
     steps:
+      - name: Check if pr exists
+        id: check_pr
+        run: |
+          echo "::set-output name=count::$(gh pr list --search '[Example] Simple demo' -B main | wc -l)"
+
       - name: Create Pull Request
         uses: actions/github-script@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          if: ${{ steps.check_pr.outputs.count == 0 }}
           script: |
             const { repo, owner } = context.repo;
             const result = await github.rest.pulls.create({
