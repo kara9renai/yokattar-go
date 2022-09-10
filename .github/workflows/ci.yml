@@ -9,9 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Pull Request
+        id: check_pr
         uses: actions/github-script@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          if: ${{ steps.check_pr.outputs.count == 0}}
           script: |
             const { repo, owner } = context.repo;
             const result = await github.rest.pulls.create({
