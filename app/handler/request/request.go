@@ -39,5 +39,5 @@ func UsernameOf(r *http.Request) string {
 }
 
 func Test() string {
-	return "test"
+	return "test_dayo"
 }
