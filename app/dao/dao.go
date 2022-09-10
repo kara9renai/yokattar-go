@@ -19,6 +19,9 @@ type (
 		// Get Timeline repository
 		Timeline() repository.Timeline
 
+		// Get Attachment repository
+		Attachment() repository.Attachment
+
 		// Clear ALl date in DB
 		InitAll() error
 	}
@@ -47,6 +50,10 @@ func (d *dao) Status() repository.Status {
 
 func (d *dao) Timeline() repository.Timeline {
 	return NewTimeline(d.db)
+}
+
+func (d *dao) Attachment() repository.Attachment {
+	return NewAttachment(d.db)
 }
 
 func (d *dao) InitAll() error {
