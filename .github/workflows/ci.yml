@@ -2,6 +2,7 @@ name: Pull Request Action
 on:
   push:
     branches:
+      # featureブランチがpushされたときのみ発動
       - feature/*
       
 jobs:
