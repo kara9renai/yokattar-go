@@ -24,4 +24,4 @@ jobs:
       - name: Create Pull Request
         if: ${{ steps.check_pr.outputs.count == 0 }}
         run: |
-          gh pr create -B main -t {{ steps.check_pr.outputs.pr_title }}
+          gh pr create -B main -t ${{ steps.check_pr.outputs.pr_title }}
