@@ -7,6 +7,10 @@ on:
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
+    
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - name: Check if pr exists
         id: check_pr
