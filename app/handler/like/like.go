@@ -9,7 +9,7 @@ import (
 )
 
 type LikeRequest struct {
-	StatusId int64
+	StatusId int `json:"like_id"`
 }
 
 // Handle Request for POST /v1/like
@@ -24,7 +24,7 @@ func (h *handler) Like(w http.ResponseWriter, r *http.Request) {
 	}
 
 	l := h.app.Dao.Like()
-	like, err := l.LikeByStatusId(ctx, account.ID, req.StatusId)
+	like, err := l.LikeByStatusId(ctx, account.ID, int64(req.StatusId))
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return

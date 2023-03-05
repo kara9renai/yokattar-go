@@ -82,3 +82,12 @@ follow:
 	-H 'accept: application/json' \
 	-H 'Authentication: username ${NAME}' \
 	-d ''
+
+like:
+	curl -X 'POST' \
+	'http://localhost:8080/v1/like' \
+	-H 'accept: application/json' \
+	-H 'Authentication: username ${NAME}' \
+	-d '{ \
+	"like_id" : 1 \
+	}'

@@ -23,8 +23,8 @@ func NewLike(db *sqlx.DB) repository.Like {
 
 func (r *like) LikeByStatusId(ctx context.Context, accountId int64, statusId int64) (*object.Like, error) {
 	const (
-		insert  = `INSERT INTO like(account_id, status_id) VALUES(?, ?)`
-		confirm = `SELECT id, create_at FROM like WHERE id = ?`
+		insert  = `INSERT INTO favorite ( account_id, status_id ) VALUES (?, ?)`
+		confirm = `SELECT id, create_at FROM favorite WHERE id = ?`
 	)
 	entity := new(object.Like)
 
