@@ -42,6 +42,7 @@ CREATE TABLE `like` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `account_id` bigint(20) NOT NULL,
     `status_id` bigint(20) NOT NULL,
+    `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_like_account_id` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
     CONSTRAINT `fk_like_status_id` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`)
