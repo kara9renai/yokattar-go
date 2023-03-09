@@ -37,3 +37,12 @@ CREATE TABLE `attachment` (
     `description` varchar(420),
     PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `favorite` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `account_id` bigint(20) NOT NULL,
+    `status_id` bigint(20) NOT NULL,
+    `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_like_account_id` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+    CONSTRAINT `fk_like_status_id` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`)
+);

@@ -24,6 +24,9 @@ type (
 
 		// Clear ALl date in DB
 		InitAll() error
+
+		// Get Like repository
+		Favorite() repository.Favorite
 	}
 
 	dao struct {
@@ -54,6 +57,10 @@ func (d *dao) Timeline() repository.Timeline {
 
 func (d *dao) Attachment() repository.Attachment {
 	return NewAttachment(d.db)
+}
+
+func (d *dao) Favorite() repository.Favorite {
+	return NewFavorite(d.db)
 }
 
 func (d *dao) InitAll() error {

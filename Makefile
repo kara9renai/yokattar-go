@@ -82,3 +82,12 @@ follow:
 	-H 'accept: application/json' \
 	-H 'Authentication: username ${NAME}' \
 	-d ''
+
+favorite:
+	curl -X 'POST' \
+	'http://localhost:8080/v1/favorite' \
+	-H 'accept: application/json' \
+	-H 'Authentication: username ${NAME}' \
+	-d '{ \
+	"favorite_id" : 1 \
+	}'
