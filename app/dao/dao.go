@@ -26,7 +26,7 @@ type (
 		InitAll() error
 
 		// Get Like repository
-		Like() repository.Like
+		Favorite() repository.Favorite
 	}
 
 	dao struct {
@@ -59,8 +59,8 @@ func (d *dao) Attachment() repository.Attachment {
 	return NewAttachment(d.db)
 }
 
-func (d *dao) Like() repository.Like {
-	return NewLike(d.db)
+func (d *dao) Favorite() repository.Favorite {
+	return NewFavorite(d.db)
 }
 
 func (d *dao) InitAll() error {

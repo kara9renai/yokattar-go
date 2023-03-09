@@ -12,21 +12,21 @@ import (
 )
 
 type (
-	like struct {
+	favorite struct {
 		db *sqlx.DB
 	}
 )
 
-func NewLike(db *sqlx.DB) repository.Like {
-	return &like{db: db}
+func NewFavorite(db *sqlx.DB) repository.Favorite {
+	return &favorite{db: db}
 }
 
-func (r *like) LikeByStatusId(ctx context.Context, accountId int64, statusId int64) (*object.Like, error) {
+func (r *favorite) FavoriteByStatusId(ctx context.Context, accountId int64, statusId int64) (*object.Favorite, error) {
 	const (
 		insert  = `INSERT INTO favorite ( account_id, status_id ) VALUES (?, ?)`
 		confirm = `SELECT id, create_at FROM favorite WHERE id = ?`
 	)
-	entity := new(object.Like)
+	entity := new(object.Favorite)
 
 	stmt, err := r.db.PreparexContext(ctx, insert)
 	if err != nil {

@@ -83,11 +83,11 @@ follow:
 	-H 'Authentication: username ${NAME}' \
 	-d ''
 
-like:
+favorite:
 	curl -X 'POST' \
-	'http://localhost:8080/v1/like' \
+	'http://localhost:8080/v1/favorite' \
 	-H 'accept: application/json' \
 	-H 'Authentication: username ${NAME}' \
 	-d '{ \
-	"like_id" : 1 \
+	"favorite_id" : 1 \
 	}'

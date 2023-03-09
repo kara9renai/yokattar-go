@@ -1,4 +1,4 @@
-package like
+package favorite
 
 import (
 	"encoding/json"
@@ -8,23 +8,23 @@ import (
 	"github.com/kara9renai/yokattar-go/app/handler/httperror"
 )
 
-type LikeRequest struct {
-	StatusId int `json:"like_id"`
+type FavoriteRequest struct {
+	StatusId int `json:"favorite_id"`
 }
 
-// Handle Request for POST /v1/like
-func (h *handler) Like(w http.ResponseWriter, r *http.Request) {
+// Handle Request for POST /v1/favorite
+func (h *handler) Favorite(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	account := auth.AccountOf(r)
-	var req LikeRequest
+	var req FavoriteRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
-	l := h.app.Dao.Like()
-	like, err := l.LikeByStatusId(ctx, account.ID, int64(req.StatusId))
+	f := h.app.Dao.Favorite()
+	like, err := f.FavoriteByStatusId(ctx, account.ID, int64(req.StatusId))
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return

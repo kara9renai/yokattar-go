@@ -1,4 +1,4 @@
-package like
+package favorite
 
 import (
 	"net/http"
@@ -15,6 +15,6 @@ type handler struct {
 func NewRouter(app *app.App) http.Handler {
 	r := chi.NewRouter()
 	h := &handler{app: app}
-	r.With(auth.Middleware(app)).Post("/", h.Like)
+	r.With(auth.Middleware(app)).Post("/", h.Favorite)
 	return r
 }
