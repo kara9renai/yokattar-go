@@ -2,9 +2,6 @@ package dao
 
 import (
 	"context"
-	"database/sql"
-	"errors"
-	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kara9renai/yokattar-go/app/domain/object"
@@ -21,33 +18,46 @@ func NewFavorite(db *sqlx.DB) repository.Favorite {
 	return &favorite{db: db}
 }
 
-func (r *favorite) FavoriteByStatusId(ctx context.Context, accountId int64, statusId int64) (*object.Favorite, error) {
+func (r *favorite) Favorite(ctx context.Context, accountId int64, statusId int64) (bool, error) {
 	const (
-		insert  = `INSERT INTO favorite ( account_id, status_id ) VALUES (?, ?)`
-		confirm = `SELECT id, create_at FROM favorite WHERE id = ?`
+		insert = `INSERT INTO favorite ( account_id, status_id ) VALUES (?, ?)`
 	)
-	entity := new(object.Favorite)
-
 	stmt, err := r.db.PreparexContext(ctx, insert)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 	defer stmt.Close()
 
-	result, err := stmt.ExecContext(ctx, accountId, statusId)
+	_, err = stmt.ExecContext(ctx, accountId, statusId)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func (r *favorite) Confirm(ctx context.Context, accountId int64, statusId int64) (bool, error) {
+	const (
+		sql = `SELECT * FROM favorite WHERE account_id = ? AND status_id = ?`
+	)
+	rows, err := r.db.QueryxContext(ctx, sql, accountId, statusId)
+	if err != nil {
+		return false, err
+	}
+	if rows.Next() {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
+func (r *favorite) Get(ctx context.Context, accountId int64, statusId int64) (*object.Favorite, error) {
+	const (
+		sql = `SELECT id, create_at FROM WHERE account_id = ? AND status_id = ?`
+	)
+	entity := new(object.Favorite)
+	err := r.db.QueryRowxContext(ctx, sql, accountId, statusId).StructScan(entity)
 	if err != nil {
 		return nil, err
-	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-	err = r.db.QueryRowxContext(ctx, confirm, id).StructScan(entity)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
-		}
-		return nil, fmt.Errorf("%w", err)
 	}
 	return entity, nil
 }

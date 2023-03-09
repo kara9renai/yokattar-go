@@ -24,13 +24,25 @@ func (h *handler) Favorite(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f := h.app.Dao.Favorite()
-	like, err := f.FavoriteByStatusId(ctx, account.ID, int64(req.StatusId))
+	isFavorite, err := f.Favorite(ctx, account.ID, int64(req.StatusId))
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
+	if !isFavorite {
+		_, err := f.Confirm(ctx, account.ID, int64(req.StatusId))
+		if err != nil {
+			httperror.BadRequest(w, err)
+			return
+		}
+	}
+	favorite, err := f.Get(ctx, account.ID, int64(req.StatusId))
+	if err != nil {
+		httperror.BadRequest(w, err)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(like); err != nil {
+	if err := json.NewEncoder(w).Encode(favorite); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
