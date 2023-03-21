@@ -16,6 +16,7 @@ CREATE TABLE `status` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `account_id` bigint(20) NOT NULL,
     `content` text NOT NULL,
+    `favorite_count` bigint(20) DEFAULT 0,
     `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     INDEX `idx_account_id` (`account_id`),
