@@ -91,3 +91,9 @@ favorite:
 	-d '{ \
 	"favorite_id" : 1 \
 	}'
+
+reboot:
+	docker compose down
+	rm -rfd .data/mysql
+	docker image rm -f yokattar-go-web
+	make up
