@@ -35,6 +35,8 @@ tags:
     externalDocs:
       description: Find out more
       url: http://example.com
+  - name: favorite
+    description: Everything about Favorite
 paths:
   /health:
     head:
@@ -472,6 +474,31 @@ paths:
         - *a3
         - *a4
       responses: *a5
+  /favorite:
+    post:
+      tags:
+        - favorite
+      summary: favorite
+      description: ""
+      operationId: addFavorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status_id:
+                  type: integer
+                  example: 1
+                  description: status id
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Favorite"
 externalDocs:
   description: Find out more about Swagger
   url: http://example.com
@@ -567,3 +594,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Attachment"
+    Favorite:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The ID of the favorite
+          example: 1
+        create_at:
+          type: string
+          format: date-time
+          description: The time the status is favorited
