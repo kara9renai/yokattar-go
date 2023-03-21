@@ -20,16 +20,13 @@ func NewAttachment(db *sqlx.DB) repository.Attachment {
 }
 
 func (r *attachment) UploadFile(ctx context.Context, fileName string) (*object.Attachment, error) {
-
 	const (
-		insert = `INSERT INTO attachment (type, url, description) VALUES (?, ?, ?)`
-
-		confirm = `SELECT * FROM attachment WHERE id = ?`
+		insert  = `INSERT INTO attachment (type, url, description) VALUES (?, ?, ?)`
+		confirm = `SELECT id, type, url, description FROM attachment WHERE id = ?`
 	)
 
-	var entity *object.Attachment
-
-	result, err := r.db.ExecContext(ctx, insert, "image", fileName, "テスト")
+	entity := new(object.Attachment)
+	result, err := r.db.ExecContext(ctx, insert, "image", fileName, "string")
 
 	if err != nil {
 		return nil, err
@@ -38,7 +35,6 @@ func (r *attachment) UploadFile(ctx context.Context, fileName string) (*object.A
 	id, _ := result.LastInsertId()
 
 	err = r.db.QueryRowxContext(ctx, confirm, id).StructScan(entity)
-
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
