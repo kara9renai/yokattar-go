@@ -2,6 +2,7 @@ package favorite
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/handler/auth"
@@ -13,7 +14,7 @@ type FavoriteRequest struct {
 }
 
 // Handle Request for POST /v1/favorite
-func (h *handler) Favorite(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	account := auth.AccountOf(r)
 	var req FavoriteRequest
@@ -30,7 +31,12 @@ func (h *handler) Favorite(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !b {
-		f.Favorite(ctx, account.ID, req.StatusId)
+		err = f.Create(ctx, account.ID, req.StatusId)
+		fmt.Println(err)
+		if err != nil {
+			httperror.InternalServerError(w, err)
+			return
+		}
 	}
 	favorite, err := f.Get(ctx, account.ID, req.StatusId)
 	if err != nil {

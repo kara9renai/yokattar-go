@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kara9renai/yokattar-go/app/domain/object"
@@ -18,21 +19,27 @@ func NewFavorite(db *sqlx.DB) repository.Favorite {
 	return &favorite{db: db}
 }
 
-func (r *favorite) Favorite(ctx context.Context, accountId int64, statusId int64) (bool, error) {
+func (r *favorite) Create(ctx context.Context, accountId int64, statusId int64) error {
 	const (
 		insert = `INSERT INTO favorite ( account_id, status_id ) VALUES (?, ?)`
+		update = `UPDATE status SET favorite_coun = favorite_coun + 1 where id = ?`
 	)
-	stmt, err := r.db.PreparexContext(ctx, insert)
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return false, err
+		return err
 	}
-	defer stmt.Close()
+	_, err = tx.ExecContext(ctx, insert, accountId, statusId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = tx.ExecContext(ctx, update, statusId)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 
-	_, err = stmt.ExecContext(ctx, accountId, statusId)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+	return tx.Commit()
 }
 
 func (r *favorite) Confirm(ctx context.Context, accountId int64, statusId int64) (bool, error) {
