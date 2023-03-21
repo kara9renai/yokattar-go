@@ -2,7 +2,6 @@ package favorite
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/handler/auth"
@@ -35,7 +34,6 @@ func (h *handler) Favorite(w http.ResponseWriter, r *http.Request) {
 	}
 	favorite, err := f.Get(ctx, account.ID, req.StatusId)
 	if err != nil {
-		log.Println("あああ")
 		httperror.BadRequest(w, err)
 		return
 	}
