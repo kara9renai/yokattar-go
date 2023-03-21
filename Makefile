@@ -89,7 +89,7 @@ favorite:
 	-H 'accept: application/json' \
 	-H 'Authentication: username ${NAME}' \
 	-d '{ \
-	"favorite_id" : 1 \
+	"status_id" : 1 \
 	}'
 
 reboot:

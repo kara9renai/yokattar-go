@@ -2,6 +2,7 @@ package favorite
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/handler/auth"
@@ -9,7 +10,7 @@ import (
 )
 
 type FavoriteRequest struct {
-	StatusId int `json:"favorite_id"`
+	StatusId int64 `json:"status_id"`
 }
 
 // Handle Request for POST /v1/favorite
@@ -24,20 +25,17 @@ func (h *handler) Favorite(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f := h.app.Dao.Favorite()
-	isFavorite, err := f.Favorite(ctx, account.ID, int64(req.StatusId))
+	b, err := f.Confirm(ctx, account.ID, req.StatusId)
 	if err != nil {
-		httperror.InternalServerError(w, err)
+		httperror.BadRequest(w, err)
 		return
 	}
-	if !isFavorite {
-		_, err := f.Confirm(ctx, account.ID, int64(req.StatusId))
-		if err != nil {
-			httperror.BadRequest(w, err)
-			return
-		}
+	if !b {
+		f.Favorite(ctx, account.ID, req.StatusId)
 	}
-	favorite, err := f.Get(ctx, account.ID, int64(req.StatusId))
+	favorite, err := f.Get(ctx, account.ID, req.StatusId)
 	if err != nil {
+		log.Println("あああ")
 		httperror.BadRequest(w, err)
 		return
 	}
