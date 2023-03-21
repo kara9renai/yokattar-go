@@ -18,6 +18,7 @@ func NewAvaliableNetworks() *availableNetworks {
 		// local machine
 		"127.0.0.0/8",
 		"172.16.0.0/12",
+		"192.168.0.0/12",
 	}
 	for _, v := range availableNetWorks {
 		_, ipnet, err := net.ParseCIDR(v)
