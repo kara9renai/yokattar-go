@@ -476,6 +476,8 @@ paths:
       responses: *a5
   /favorite:
     post:
+      security:
+        - Auth: []
       tags:
         - favorite
       summary: favorite
