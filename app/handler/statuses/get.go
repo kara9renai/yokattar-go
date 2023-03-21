@@ -10,32 +10,25 @@ import (
 
 // Handle Request for `GET /v1/statuses/:id`
 func (h *handler) Get(w http.ResponseWriter, r *http.Request) {
-
 	ctx := r.Context()
 
 	// IDの取得
 	id, err := request.IDOf(r)
-
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
 
 	s := h.app.Dao.Status() // domain/repositoryの取得
-
-	status, err := s.GetStatus(ctx, id)
-
+	status, err := s.Get(ctx, id)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
 
 	if status != nil {
-
 		a := h.app.Dao.Account() // domain/repositoryの取得
-
 		account, err := a.FindByID(ctx, status.AccountID)
-
 		if err != nil {
 			httperror.InternalServerError(w, err)
 			return
@@ -45,7 +38,6 @@ func (h *handler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-
 	if err := json.NewEncoder(w).Encode(status); err != nil {
 		httperror.InternalServerError(w, err)
 		return

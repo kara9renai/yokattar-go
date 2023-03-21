@@ -5,13 +5,14 @@ import (
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/config"
+	"github.com/kara9renai/yokattar-go/app/domain/object"
 	"github.com/kara9renai/yokattar-go/app/handler/httperror"
-	"github.com/kara9renai/yokattar-go/app/utils"
 )
 
 // Handle Request for POST `v1/media`
 func (h *handler) Upload(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	attachment := new(object.Attachment)
 	r.Body = http.MaxBytesReader(w, r.Body, config.MaxUploadSize)
 	// ParseMutipartFormはリクエストボディを`multipart/form-data`として解析する関数
 	if err := r.ParseMultipartForm(config.MaxUploadSize); err != nil {
@@ -24,15 +25,15 @@ func (h *handler) Upload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-
-	fileName := utils.CreateFileName(fileHeader)
-	if err := utils.CopyFile(file, fileName); err != nil {
+	fileName := attachment.CreateFileName(fileHeader)
+	err = attachment.CopyFile(file, fileName)
+	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
 
 	at := h.app.Dao.Attachment() // domain/repositoryの取得
-	attachment, err := at.Save(ctx, fileName)
+	attachment, err = at.Save(ctx, fileName)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return

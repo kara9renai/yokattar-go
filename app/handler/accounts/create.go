@@ -27,7 +27,6 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	account := new(object.Account)
-
 	account.Username = req.Username
 	account.DisplayName = req.DisplayName
 	account.Avatar = req.Avatar
@@ -40,8 +39,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	a := h.app.Dao.Account()
-
-	account, err := a.CreateAccount(ctx, account)
+	account, err := a.Create(ctx, account)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return

@@ -23,8 +23,11 @@ func NewAccount(db *sqlx.DB) repository.Account {
 }
 
 func (r *account) FindByUsername(ctx context.Context, username string) (*object.Account, error) {
+	const (
+		confirm = `select * from account where username = ?`
+	)
 	entity := new(object.Account)
-	err := r.db.QueryRowxContext(ctx, "select * from account where username = ?", username).StructScan(entity)
+	err := r.db.QueryRowxContext(ctx, confirm, username).StructScan(entity)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -36,9 +39,7 @@ func (r *account) FindByUsername(ctx context.Context, username string) (*object.
 }
 
 // CreateAccount: ユーザ名とパスワードからアカウントを新規作成する
-func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account) (*object.Account, error) {
-	entity := new(object.Account)
-
+func (r *account) Create(ctx context.Context, newAccount *object.Account) (*object.Account, error) {
 	const (
 		insert = `insert into account (
 				username, password_hash, display_name, avatar, header, note,
@@ -48,16 +49,17 @@ func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account)
 
 		confirm = "select * from account where id = ?"
 	)
+	entity := new(object.Account)
 
 	// prepared statement
 	stmt, err := r.db.PreparexContext(ctx, insert)
 	if err != nil {
 		return nil, err
 	}
-
 	defer stmt.Close()
 
-	result, err := stmt.ExecContext(ctx,
+	result, err := stmt.ExecContext(
+		ctx,
 		newAccount.Username,
 		newAccount.PasswordHash,
 		newAccount.DisplayName,
@@ -65,20 +67,18 @@ func (r *account) CreateAccount(ctx context.Context, newAccount *object.Account)
 		newAccount.Header,
 		newAccount.Note,
 		0,
-		0)
-
+		0,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	id, err := result.LastInsertId()
-
 	if err != nil {
 		return nil, err
 	}
 
 	err = r.db.QueryRowxContext(ctx, confirm, id).StructScan(entity)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil

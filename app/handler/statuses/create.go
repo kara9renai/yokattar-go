@@ -18,23 +18,20 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	account := auth.AccountOf(r)
 
 	var req AddRequest
-
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 
 	s := h.app.Dao.Status()
-	status, err := s.CreateStatus(ctx, account.ID, req.Status)
+	status, err := s.Create(ctx, account.ID, req.Status)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
-
 	if status != nil {
 		a := h.app.Dao.Account()
 		account, err := a.FindByID(ctx, status.AccountID)
-
 		if err != nil {
 			httperror.InternalServerError(w, err)
 			return

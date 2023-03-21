@@ -21,25 +21,20 @@ func NewStatus(db *sqlx.DB) repository.Status {
 	return &status{db: db}
 }
 
-func (r *status) CreateStatus(ctx context.Context, accountId int64, content string) (*object.Status, error) {
-
+func (r *status) Create(ctx context.Context, accountId int64, content string) (*object.Status, error) {
 	const (
 		insert  = `insert into status (account_id, content) values (?, ?)`
 		confirm = `select * from status where id = ?`
 	)
-
 	entity := new(object.Status)
 
 	stmt, err := r.db.PreparexContext(ctx, insert)
-
 	if err != nil {
 		return nil, err
 	}
-
 	defer stmt.Close()
 
 	result, err := stmt.ExecContext(ctx, accountId, content)
-
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +42,6 @@ func (r *status) CreateStatus(ctx context.Context, accountId int64, content stri
 	if err != nil {
 		return nil, err
 	}
-
 	err = r.db.QueryRowxContext(ctx, confirm, id).StructScan(entity)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -60,16 +54,12 @@ func (r *status) CreateStatus(ctx context.Context, accountId int64, content stri
 	return entity, nil
 }
 
-func (r *status) GetStatus(ctx context.Context, id int64) (*object.Status, error) {
-
+func (r *status) Get(ctx context.Context, id int64) (*object.Status, error) {
 	const (
 		query = `select * from status where id = ?`
 	)
-
 	entity := new(object.Status)
-
 	err := r.db.QueryRowxContext(ctx, query, id).StructScan(entity)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -81,13 +71,11 @@ func (r *status) GetStatus(ctx context.Context, id int64) (*object.Status, error
 	return entity, nil
 }
 
-func (r *status) DeleteStatus(ctx context.Context, statusId int64) error {
+func (r *status) Delete(ctx context.Context, statusId int64) error {
 	const (
 		deleteFmt = `DELETE FROM status WHERE id = ?`
 	)
-
 	_, err := r.db.ExecContext(ctx, deleteFmt, statusId)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil
