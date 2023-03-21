@@ -19,7 +19,7 @@ func NewAttachment(db *sqlx.DB) repository.Attachment {
 	return &attachment{db: db}
 }
 
-func (r *attachment) UploadFile(ctx context.Context, fileName string) (*object.Attachment, error) {
+func (r *attachment) Save(ctx context.Context, fileName string) (*object.Attachment, error) {
 	const (
 		insert  = `INSERT INTO attachment (type, url, description) VALUES (?, ?, ?)`
 		confirm = `SELECT id, type, url, description FROM attachment WHERE id = ?`

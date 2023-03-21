@@ -7,5 +7,5 @@ import (
 )
 
 type Attachment interface {
-	UploadFile(ctx context.Context, fileName string) (*object.Attachment, error)
+	Save(ctx context.Context, fileName string) (*object.Attachment, error)
 }
