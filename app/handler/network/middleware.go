@@ -1,4 +1,4 @@
-package utils
+package network
 
 import (
 	"net"
@@ -31,7 +31,7 @@ func NewAvaliableNetworks() *availableNetworks {
 	return nw
 }
 
-func (nw *availableNetworks) isPrivatedAddr(i string) bool {
+func (nw *availableNetworks) IsPrivatedAddr(i string) bool {
 	ip := net.ParseIP(i)
 	if ip == nil {
 		return false
@@ -48,7 +48,7 @@ func Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			nw := NewAvaliableNetworks()
-			isPrivatedAddr := nw.isPrivatedAddr(strings.Split(r.RemoteAddr, ":")[0])
+			isPrivatedAddr := nw.IsPrivatedAddr(strings.Split(r.RemoteAddr, ":")[0])
 			if !isPrivatedAddr {
 				httperror.Error(w, http.StatusForbidden)
 				return

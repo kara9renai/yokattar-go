@@ -13,7 +13,7 @@ services:
     volumes:
       - "./.data/mysql:/var/lib/mysql"
       - "./ddl:/docker-entrypoint-initdb.d"
-      - "./conf.d/my.cnf:/etc/mysql/my.cnf"
+      - "./configs/my.cnf:/etc/mysql/my.cnf"
     restart: on-failure
   
   web:
@@ -45,6 +45,6 @@ services:
     ports:
       - "8081:8080"
     volumes:
-      - ./openapi.yml:/data/openapi.yml
+      - ./api/openapi.yml:/data/openapi.yml
     environment:
       SWAGGER_JSON: /data/openapi.yml

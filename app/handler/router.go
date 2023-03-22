@@ -9,9 +9,9 @@ import (
 	"github.com/kara9renai/yokattar-go/app/handler/favorite"
 	"github.com/kara9renai/yokattar-go/app/handler/health"
 	"github.com/kara9renai/yokattar-go/app/handler/media"
+	"github.com/kara9renai/yokattar-go/app/handler/network"
 	"github.com/kara9renai/yokattar-go/app/handler/statuses"
 	"github.com/kara9renai/yokattar-go/app/handler/timelines"
-	"github.com/kara9renai/yokattar-go/app/utils"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -27,7 +27,7 @@ func NewRouter(app *app.App) http.Handler {
 	r.Use(middleware.Recoverer)
 	r.Use(newCORS().Handler)
 
-	r.Use(utils.Middleware())
+	r.Use(network.Middleware())
 
 	r.Use(middleware.Timeout(60 * time.Second))
 
