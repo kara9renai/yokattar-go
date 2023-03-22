@@ -5,26 +5,20 @@ import (
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/domain/object"
-	"github.com/kara9renai/yokattar-go/app/handler/auth"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
-	"github.com/kara9renai/yokattar-go/app/handler/request"
+	"github.com/kara9renai/yokattar-go/app/http/middleware"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/server/handler/request"
 )
 
 // Handle Request for `POST /accounts/{username}/unfollow`
 func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
-
 	relation := new(object.Relationship)
-
 	ctx := r.Context()
-
 	username := request.UsernameOf(r)
-
-	unfollowingUser := auth.AccountOf(r)
+	unfollowingUser := middleware.AccountOf(r)
 
 	a := h.app.Dao.Account() // domain/repository の取得
-
 	unfollowedUser, err := a.FindByUsername(ctx, username)
-
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
@@ -34,9 +28,9 @@ func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
 		httperror.InternalServerError(w, err)
 		return
 	}
+
 	// フォローを解除する対象が、同時にフォローしているのかどうかを確認する
 	flag, err := a.FindRelationByID(ctx, unfollowedUser.ID, unfollowingUser.ID)
-
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return

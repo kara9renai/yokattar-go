@@ -1,4 +1,5 @@
 BINARY := yokattar-go
+ENTRYPOINT := ./cmd/main.go
 MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 PATH := $(PATH):${MAKEFILE_DIR}bin
@@ -16,10 +17,10 @@ LDFLAGS := -ldflags "-X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT} -X main
 build: build-linux
 
 build-default:
-	go build ${LDFLAGS} -o build/${BINARY}
+	go build ${LDFLAGS} -o build/${BINARY} ${ENTRYPOINT}
 
 build-linux:
-	GOOS=linux GOARCH=${GOARCH} go build ${LDFLAGS} -o build/${BINARY}-linux-${GOARCH} .
+	GOOS=linux GOARCH=${GOARCH} go build ${LDFLAGS} -o build/${BINARY}-linux-${GOARCH} ${ENTRYPOINT}
 
 prepare: mod
 

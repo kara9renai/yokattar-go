@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kara9renai/yokattar-go/app/handler/auth"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/http/middleware"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
 )
 
 type AddRequest struct {
@@ -15,7 +15,7 @@ type AddRequest struct {
 // Handle Request for `POST /v1/statuses`
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	account := auth.AccountOf(r)
+	account := middleware.AccountOf(r)
 
 	var req AddRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

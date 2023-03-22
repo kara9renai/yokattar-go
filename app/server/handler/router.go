@@ -5,13 +5,13 @@ import (
 	"time"
 
 	"github.com/kara9renai/yokattar-go/app/app"
-	"github.com/kara9renai/yokattar-go/app/handler/accounts"
-	"github.com/kara9renai/yokattar-go/app/handler/favorite"
-	"github.com/kara9renai/yokattar-go/app/handler/health"
-	"github.com/kara9renai/yokattar-go/app/handler/media"
-	"github.com/kara9renai/yokattar-go/app/handler/network"
-	"github.com/kara9renai/yokattar-go/app/handler/statuses"
-	"github.com/kara9renai/yokattar-go/app/handler/timelines"
+	mymiddleware "github.com/kara9renai/yokattar-go/app/http/middleware"
+	"github.com/kara9renai/yokattar-go/app/server/handler/accounts"
+	"github.com/kara9renai/yokattar-go/app/server/handler/favorite"
+	"github.com/kara9renai/yokattar-go/app/server/handler/health"
+	"github.com/kara9renai/yokattar-go/app/server/handler/media"
+	"github.com/kara9renai/yokattar-go/app/server/handler/statuses"
+	"github.com/kara9renai/yokattar-go/app/server/handler/timelines"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -26,10 +26,8 @@ func NewRouter(app *app.App) http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(newCORS().Handler)
-
-	r.Use(network.Middleware())
-
 	r.Use(middleware.Timeout(60 * time.Second))
+	r.Use(mymiddleware.AvailableIP())
 
 	r.Mount("/v1/accounts", accounts.NewRouter(app))
 	r.Mount("/v1/statuses", statuses.NewRouter(app))

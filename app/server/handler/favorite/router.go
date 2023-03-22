@@ -1,11 +1,11 @@
-package statuses
+package favorite
 
 import (
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/kara9renai/yokattar-go/app/app"
-	"github.com/kara9renai/yokattar-go/app/handler/auth"
+	"github.com/kara9renai/yokattar-go/app/http/middleware"
 )
 
 type handler struct {
@@ -14,11 +14,7 @@ type handler struct {
 
 func NewRouter(app *app.App) http.Handler {
 	r := chi.NewRouter()
-
 	h := &handler{app: app}
-
-	r.With(auth.Middleware(app)).Post("/", h.Create)
-	r.Get("/{id}", h.Get)
-	r.With(auth.Middleware(app)).Delete("/{id}", h.Delete)
+	r.With(middleware.Authenticate(app)).Post("/create", h.Create)
 	return r
 }

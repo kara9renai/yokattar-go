@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
-	"github.com/kara9renai/yokattar-go/app/handler/request"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/server/handler/request"
 )
 
 // Handle Request for `GET /v1/statuses/:id`

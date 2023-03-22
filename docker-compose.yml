@@ -45,6 +45,6 @@ services:
     ports:
       - "8081:8080"
     volumes:
-      - ./api/openapi.yml:/data/openapi.yml
+      - ./docs/openapi.yml:/data/openapi.yml
     environment:
       SWAGGER_JSON: /data/openapi.yml

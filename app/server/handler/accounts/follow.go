@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/domain/object"
-	"github.com/kara9renai/yokattar-go/app/handler/auth"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
-	"github.com/kara9renai/yokattar-go/app/handler/request"
+	"github.com/kara9renai/yokattar-go/app/http/middleware"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/server/handler/request"
 )
 
 // Handle Request for `POST /v1/accounts/{username}/follow`
@@ -19,7 +19,7 @@ func (h *handler) Follow(w http.ResponseWriter, r *http.Request) {
 
 	username := request.UsernameOf(r)
 
-	followingUser := auth.AccountOf(r)
+	followingUser := middleware.AccountOf(r)
 
 	a := h.app.Dao.Account() // domain/repository の取得
 

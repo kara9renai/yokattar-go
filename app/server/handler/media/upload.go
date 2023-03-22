@@ -6,7 +6,7 @@ import (
 
 	"github.com/kara9renai/yokattar-go/app/config"
 	"github.com/kara9renai/yokattar-go/app/domain/object"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
 )
 
 // Handle Request for POST `v1/media`

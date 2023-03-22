@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/kara9renai/yokattar-go/app/app"
-	"github.com/kara9renai/yokattar-go/app/handler/auth"
+	"github.com/kara9renai/yokattar-go/app/http/middleware"
 )
 
 type handler struct {
@@ -17,9 +17,9 @@ func NewRouter(app *app.App) http.Handler {
 	h := &handler{app: app}
 	r.Post("/", h.Create)
 	r.Get("/{username}", h.Get)
-	r.With(auth.Middleware(app)).Post("/{username}/follow", h.Follow)
+	r.With(middleware.Authenticate(app)).Post("/{username}/follow", h.Follow)
 	r.Get("/{username}/following", h.Following)
 	r.Get("/{username}/followers", h.Followers)
-	r.With(auth.Middleware(app)).Post("/{username}/unfollow", h.Unfollow)
+	r.With(middleware.Authenticate(app)).Post("/{username}/unfollow", h.Unfollow)
 	return r
 }

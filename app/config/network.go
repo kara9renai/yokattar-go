@@ -1,12 +1,6 @@
-package network
+package config
 
-import (
-	"net"
-	"net/http"
-	"strings"
-
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
-)
+import "net"
 
 type availableNetworks struct {
 	networks []*net.IPNet
@@ -42,18 +36,4 @@ func (nw *availableNetworks) IsPrivatedAddr(i string) bool {
 		}
 	}
 	return false
-}
-
-func Middleware() func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			nw := NewAvaliableNetworks()
-			isPrivatedAddr := nw.IsPrivatedAddr(strings.Split(r.RemoteAddr, ":")[0])
-			if !isPrivatedAddr {
-				httperror.Error(w, http.StatusForbidden)
-				return
-			}
-			next.ServeHTTP(w, r)
-		})
-	}
 }

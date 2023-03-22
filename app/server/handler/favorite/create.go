@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kara9renai/yokattar-go/app/handler/auth"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/http/middleware"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
 )
 
 type FavoriteRequest struct {
@@ -16,7 +16,7 @@ type FavoriteRequest struct {
 // Handle Request for POST /v1/favorite
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	account := auth.AccountOf(r)
+	account := middleware.AccountOf(r)
 	var req FavoriteRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

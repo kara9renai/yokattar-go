@@ -1,4 +1,4 @@
-package auth
+package middleware
 
 import (
 	"context"
@@ -7,12 +7,12 @@ import (
 
 	"github.com/kara9renai/yokattar-go/app/app"
 	"github.com/kara9renai/yokattar-go/app/domain/object"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
 )
 
 var contextKey struct{}
 
-func Middleware(app *app.App) func(http.Handler) http.Handler {
+func Authenticate(app *app.App) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()

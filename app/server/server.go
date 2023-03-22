@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 
 	"github.com/kara9renai/yokattar-go/app/app"
 	"github.com/kara9renai/yokattar-go/app/config"
-	"github.com/kara9renai/yokattar-go/app/handler"
+	"github.com/kara9renai/yokattar-go/app/server/handler"
 	"golang.org/x/sync/errgroup"
 )
 

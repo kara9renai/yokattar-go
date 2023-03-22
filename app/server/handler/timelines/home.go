@@ -5,13 +5,16 @@ import (
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/config"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
-	"github.com/kara9renai/yokattar-go/app/handler/request"
+	"github.com/kara9renai/yokattar-go/app/http/middleware"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/server/handler/request"
 )
 
-// Handle Request for `GET /timelines/public`
-func (h *handler) Public(w http.ResponseWriter, r *http.Request) {
+// Handle Request for `GET /timelines/home`
+func (h *handler) Home(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+
+	account := middleware.AccountOf(r)
 
 	limit, err := request.URLParamOf(r, "limit")
 
@@ -35,9 +38,9 @@ func (h *handler) Public(w http.ResponseWriter, r *http.Request) {
 		sinceId = config.DEFAULT_SINCE_ID
 	}
 
-	t := h.app.Dao.Timeline()
+	t := h.app.Dao.Timeline() // domain/repository の取得
 
-	statuses, err := t.GetPublic(ctx, maxId, sinceId, limit)
+	statuses, err := t.GetHome(ctx, account.ID, maxId, sinceId, limit)
 
 	if err != nil {
 		httperror.InternalServerError(w, err)
@@ -46,7 +49,7 @@ func (h *handler) Public(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	if err := json.NewEncoder(w).Encode(statuses); err != nil {
+	if err = json.NewEncoder(w).Encode(statuses); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}

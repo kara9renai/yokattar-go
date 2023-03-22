@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/kara9renai/yokattar-go/app/config"
-	"github.com/kara9renai/yokattar-go/app/handler/httperror"
-	"github.com/kara9renai/yokattar-go/app/handler/request"
+	"github.com/kara9renai/yokattar-go/app/server/handler/httperror"
+	"github.com/kara9renai/yokattar-go/app/server/handler/request"
 )
 
-// Handle Request for `GET /accounts/{username}/following`
-func (h *handler) Following(w http.ResponseWriter, r *http.Request) {
+// Handle Request for `GET /accounts/{username}/followers`
+func (h *handler) Followers(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 
@@ -35,7 +35,7 @@ func (h *handler) Following(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	followingUsers, err := a.FindFollowing(ctx, account.ID, limit)
+	followers, err := a.FindFollowers(ctx, account.ID, limit)
 
 	if err != nil {
 		httperror.InternalServerError(w, err)
@@ -44,7 +44,7 @@ func (h *handler) Following(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	if err := json.NewEncoder(w).Encode(followingUsers); err != nil {
+	if err := json.NewEncoder(w).Encode(followers); err != nil {
 		httperror.InternalServerError(w, err)
 		return
 	}
