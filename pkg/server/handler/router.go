@@ -7,7 +7,7 @@ import (
 	"github.com/kara9renai/yokattar-go/internal/app"
 	mymiddleware "github.com/kara9renai/yokattar-go/pkg/http/middleware"
 	"github.com/kara9renai/yokattar-go/pkg/server/handler/accounts"
-	"github.com/kara9renai/yokattar-go/pkg/server/handler/favorite"
+	"github.com/kara9renai/yokattar-go/pkg/server/handler/favorites"
 	"github.com/kara9renai/yokattar-go/pkg/server/handler/health"
 	"github.com/kara9renai/yokattar-go/pkg/server/handler/media"
 	"github.com/kara9renai/yokattar-go/pkg/server/handler/statuses"
@@ -34,7 +34,7 @@ func NewRouter(app *app.App) http.Handler {
 	r.Mount("/v1/health", health.NewRouter())
 	r.Mount("/v1/media", media.NewRouter(app))
 	r.Mount("/v1/timelines", timelines.NewRouter(app))
-	r.Mount("/v1/favorite", favorite.NewRouter(app))
+	r.Mount("/v1/favorites", favorites.NewRouter(app))
 	return r
 }
 

@@ -35,8 +35,8 @@ tags:
     externalDocs:
       description: Find out more
       url: http://example.com
-  - name: favorite
-    description: Everything about Favorite
+  - name: favorites
+    description: Everything about Favorites
 paths:
   /health:
     head:
@@ -474,13 +474,13 @@ paths:
         - *a3
         - *a4
       responses: *a5
-  /favorite:
+  /favorites/create:
     post:
       security:
         - Auth: []
       tags:
-        - favorite
-      summary: favorite
+        - favorites
+      summary: add favorite
       description: ""
       operationId: addFavorite
       requestBody:
