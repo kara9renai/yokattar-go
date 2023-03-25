@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/kara9renai/yokattar-go/app/server"
+	"github.com/kara9renai/yokattar-go/pkg/server"
 )
 
 func main() {
