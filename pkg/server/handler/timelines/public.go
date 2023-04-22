@@ -13,13 +13,7 @@ import (
 func (h *handler) Public(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	limit, err := request.URLParamOf(r, "limit")
-	if err != nil {
-		limit = config.DEFAULT_LIMIT
-	}
-	if limit > config.MAX_LIMIT {
-		limit = config.MAX_LIMIT
-	}
+	limit := request.LimitOf(r)
 
 	maxId, err := request.URLParamOf(r, "max_id")
 	if err != nil {
