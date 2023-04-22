@@ -20,4 +20,6 @@ type Account interface {
 	FindFollowers(ctx context.Context, accountId int64, limit int64) ([]*object.Account, error)
 	// impl function to unfollow
 	Unfollow(ctx context.Context, followingId int64, followerId int64) error
+	// impl function to update credentials
+	Update(ctx context.Context, user *object.Account) (*object.Account, error)
 }

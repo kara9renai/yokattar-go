@@ -21,5 +21,6 @@ func NewRouter(app *app.App) http.Handler {
 	r.Get("/{username}/following", h.Following)
 	r.Get("/{username}/followers", h.Followers)
 	r.With(middleware.Authenticate(app)).Post("/{username}/unfollow", h.Unfollow)
+	r.With(middleware.Authenticate(app)).Post("/update_credentials", h.Update)
 	return r
 }

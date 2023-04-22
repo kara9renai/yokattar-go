@@ -253,3 +253,21 @@ func (r *account) Unfollow(ctx context.Context, followerId int64, followeeId int
 
 	return nil
 }
+
+func (r *account) Update(ctx context.Context, user *object.Account) (*object.Account, error) {
+	const (
+		update = `UPDATE account SET display_name = ?, avatar = ?, header = ?, note = ? WHERE id = ?`
+	)
+
+	stmt, err := r.db.PrepareContext(ctx, update)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, user.DisplayName, user.Avatar, user.Header, user.Note, user.ID)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
