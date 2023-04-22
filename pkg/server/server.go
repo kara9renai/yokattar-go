@@ -16,11 +16,11 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type Boot struct {
+type ApiServer struct {
 	srv *http.Server
 }
 
-func (b *Boot) SetUp() {
+func (b *ApiServer) Init() {
 	app, err := app.NewApp()
 	if err != nil {
 		log.Fatalf("%+v", err)
@@ -34,7 +34,7 @@ func (b *Boot) SetUp() {
 	b.srv = srv
 }
 
-func (b *Boot) Serve(ctx context.Context) error {
+func (b *ApiServer) Serve(ctx context.Context) error {
 	ctx, stop := signal.NotifyContext(ctx, syscall.SIGTERM, os.Interrupt, syscall.SIGINT)
 	defer stop()
 

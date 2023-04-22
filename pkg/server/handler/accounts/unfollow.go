@@ -29,7 +29,6 @@ func (h *handler) Unfollow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// フォローを解除する対象が、同時にフォローしているのかどうかを確認する
 	flag, err := a.FindRelationByID(ctx, unfollowedUser.ID, unfollowingUser.ID)
 	if err != nil {
 		httperror.InternalServerError(w, err)

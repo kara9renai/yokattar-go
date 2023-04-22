@@ -12,19 +12,13 @@ import (
 
 // Handle Request for `POST /v1/accounts/{username}/follow`
 func (h *handler) Follow(w http.ResponseWriter, r *http.Request) {
-
-	relation := new(object.Relationship)
-
 	ctx := r.Context()
-
+	relation := new(object.Relationship)
 	username := request.UsernameOf(r)
-
 	followingUser := middleware.AccountOf(r)
 
 	a := h.app.Dao.Account() // domain/repository の取得
-
 	followedUser, err := a.FindByUsername(ctx, username)
-
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
@@ -35,9 +29,7 @@ func (h *handler) Follow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// フォローする対象が、同時に自分をフォローしているかどうかを確認する
 	flag, err := a.FindRelationByID(ctx, followedUser.ID, followingUser.ID)
-
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return

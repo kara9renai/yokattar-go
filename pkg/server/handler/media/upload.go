@@ -19,12 +19,14 @@ func (h *handler) Upload(w http.ResponseWriter, r *http.Request) {
 		httperror.InternalServerError(w, err)
 		return
 	}
+
 	file, fileHeader, err := r.FormFile("file")
 	if err != nil {
 		httperror.BadRequest(w, err)
 		return
 	}
 	defer file.Close()
+
 	fileName := attachment.CreateFileName(fileHeader)
 	err = attachment.CopyFile(file, fileName)
 	if err != nil {

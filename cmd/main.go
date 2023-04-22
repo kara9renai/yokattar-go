@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	b := server.Boot{}
-	b.SetUp()
-	if err := b.Serve(context.Background()); err != nil {
+	srv := server.ApiServer{}
+	srv.Init()
+	if err := srv.Serve(context.Background()); err != nil {
 		log.Fatalf("serve: %+v", err)
 	}
 }

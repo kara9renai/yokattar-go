@@ -16,7 +16,6 @@ func (h *handler) Get(w http.ResponseWriter, r *http.Request) {
 
 	a := h.app.Dao.Account() // domain/repository の取得
 	account, err := a.FindByUsername(ctx, username)
-
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
