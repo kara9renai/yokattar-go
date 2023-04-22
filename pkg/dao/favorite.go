@@ -68,3 +68,12 @@ func (r *favorite) Get(ctx context.Context, accountId int64, statusId int64) (*o
 	}
 	return entity, nil
 }
+
+func (r *favorite) Delete(ctx context.Context, accountId int64, statusId int64) error {
+	const sql = `DELETE FROM favorite WHERE account_id = ? and status_id = ?`
+	_, err := r.db.ExecContext(ctx, sql, accountId, statusId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
