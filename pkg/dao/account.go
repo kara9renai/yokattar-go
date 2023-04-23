@@ -262,21 +262,24 @@ func (r *account) Update(ctx context.Context, userId int64, dto dto.Credentials)
 	update := `UPDATE account SET `
 	entity := new(object.Account)
 	args := make([]interface{}, 0, 5)
-	if len(dto.DisplayName) != 0 {
-		update += " display_name = ? "
-		args = append(args, dto.DisplayName)
+
+	m := map[string]string{
+		"display_name": dto.DisplayName,
+		"avatar":       dto.Avatar,
+		"header":       dto.Header,
+		"note":         dto.Note,
 	}
-	if len(dto.Avatar) != 0 {
-		update += " , avatar = ? "
-		args = append(args, dto.Avatar)
-	}
-	if len(dto.Header) != 0 {
-		update += " , header = ? "
-		args = append(args, dto.Header)
-	}
-	if len(dto.Note) != 0 {
-		update += ", note = ? "
-		args = append(args, dto.Note)
+	isColumn := false
+
+	for columnName, dtoValue := range m {
+		if len(dtoValue) != 0 {
+			if isColumn {
+				update += " ,"
+			}
+			update += fmt.Sprintf(" %v = ? ", columnName)
+			args = append(args, dtoValue)
+			isColumn = true
+		}
 	}
 	update += " WHERE id = ?"
 	args = append(args, userId)
@@ -287,7 +290,7 @@ func (r *account) Update(ctx context.Context, userId int64, dto dto.Credentials)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.ExecContext(ctx, stmt, args)
+	_, err = stmt.ExecContext(ctx, args...)
 	if err != nil {
 		return nil, err
 	}
