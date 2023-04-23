@@ -255,7 +255,7 @@ func (r *account) Unfollow(ctx context.Context, followerId int64, followeeId int
 	return nil
 }
 
-func (r *account) Update(ctx context.Context, userId int64, dto dto.Credentials) (*object.Account, error) {
+func (r *account) UpdateCredentials(ctx context.Context, userId int64, dto dto.Credentials) (*object.Account, error) {
 	const (
 		confirm = `SELECT * FROM account WHERE id = ?`
 	)

@@ -22,5 +22,5 @@ type Account interface {
 	// impl function to unfollow
 	Unfollow(ctx context.Context, followingId int64, followerId int64) error
 	// impl function to update credentials
-	Update(ctx context.Context, userId int64, credentials dto.Credentials) (*object.Account, error)
+	UpdateCredentials(ctx context.Context, userId int64, credentials dto.Credentials) (*object.Account, error)
 }

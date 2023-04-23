@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kara9renai/yokattar-go/pkg/domain/object"
 	"github.com/kara9renai/yokattar-go/pkg/dto"
 	"github.com/kara9renai/yokattar-go/pkg/http/middleware"
 	"github.com/kara9renai/yokattar-go/pkg/server/handler/httperror"
@@ -27,7 +26,7 @@ func (h *handler) Update(w http.ResponseWriter, r *http.Request) {
 
 	targetUser := middleware.AccountOf(r)
 	a := h.app.Dao.Account() // get domain/repository
-	updateUser, err := a.Update(ctx, targetUser.ID, dto)
+	updateUser, err := a.UpdateCredentials(ctx, targetUser.ID, dto)
 	if err != nil {
 		httperror.InternalServerError(w, err)
 		return
@@ -37,12 +36,5 @@ func (h *handler) Update(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(updateUser); err != nil {
 		httperror.InternalServerError(w, err)
-	}
-}
-
-func Test(r *http.Request, val string, e *object.Account) {
-	newValue := r.FormValue(val)
-	if len(newValue) != 0 {
-		e.DisplayName = &newValue
 	}
 }
