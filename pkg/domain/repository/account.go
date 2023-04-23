@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/kara9renai/yokattar-go/pkg/domain/object"
+	"github.com/kara9renai/yokattar-go/pkg/dto"
 )
 
 type Account interface {
@@ -20,4 +21,6 @@ type Account interface {
 	FindFollowers(ctx context.Context, accountId int64, limit int64) ([]*object.Account, error)
 	// impl function to unfollow
 	Unfollow(ctx context.Context, followingId int64, followerId int64) error
+	// impl function to update credentials
+	UpdateCredentials(ctx context.Context, userId int64, credentials dto.Credentials) (*object.Account, error)
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/kara9renai/yokattar-go/pkg/domain/object"
 	"github.com/kara9renai/yokattar-go/pkg/domain/repository"
+	"github.com/kara9renai/yokattar-go/pkg/dto"
 )
 
 type (
@@ -252,4 +253,51 @@ func (r *account) Unfollow(ctx context.Context, followerId int64, followeeId int
 	}
 
 	return nil
+}
+
+func (r *account) UpdateCredentials(ctx context.Context, userId int64, dto dto.Credentials) (*object.Account, error) {
+	const (
+		confirm = `SELECT * FROM account WHERE id = ?`
+	)
+	update := `UPDATE account SET `
+	entity := new(object.Account)
+	args := make([]interface{}, 0, 5)
+
+	m := map[string]string{
+		"display_name": dto.DisplayName,
+		"avatar":       dto.Avatar,
+		"header":       dto.Header,
+		"note":         dto.Note,
+	}
+	isColumn := false
+
+	for columnName, dtoValue := range m {
+		if len(dtoValue) != 0 {
+			if isColumn {
+				update += " ,"
+			}
+			update += fmt.Sprintf(" %v = ? ", columnName)
+			args = append(args, dtoValue)
+			isColumn = true
+		}
+	}
+	update += " WHERE id = ?"
+	args = append(args, userId)
+
+	stmt, err := r.db.PreparexContext(ctx, update)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := r.db.QueryRowxContext(ctx, confirm, userId).StructScan(entity); err != nil {
+		return nil, err
+	}
+
+	return entity, nil
 }
