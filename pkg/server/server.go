@@ -20,7 +20,7 @@ type ApiServer struct {
 	srv *http.Server
 }
 
-func (b *ApiServer) Init() {
+func (s *ApiServer) Init() {
 	app, err := app.NewApp()
 	if err != nil {
 		log.Fatalf("%+v", err)
@@ -31,17 +31,17 @@ func (b *ApiServer) Init() {
 		Addr:    addr,
 		Handler: handler.NewRouter(app),
 	}
-	b.srv = srv
+	s.srv = srv
 }
 
-func (b *ApiServer) Serve(ctx context.Context) error {
+func (s *ApiServer) Serve(ctx context.Context) error {
 	ctx, stop := signal.NotifyContext(ctx, syscall.SIGTERM, os.Interrupt, syscall.SIGINT)
 	defer stop()
 
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(
 		func() error {
-			if err := b.srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			if err := s.srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 				return err
 			}
 			return nil
@@ -51,7 +51,7 @@ func (b *ApiServer) Serve(ctx context.Context) error {
 	log.Println("Server Shutting down . . . ")
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := b.srv.Shutdown(shutdownCtx); err != nil {
+	if err := s.srv.Shutdown(shutdownCtx); err != nil {
 		log.Fatalf("failed to shutdown: %+v", err)
 	}
 	log.Println("Server Shutdown")
