@@ -10,6 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/kara9renai/yokattar-go/pkg/domain/object"
 	"github.com/kara9renai/yokattar-go/pkg/domain/repository"
+	"github.com/kara9renai/yokattar-go/pkg/dto"
 )
 
 type (
@@ -254,20 +255,46 @@ func (r *account) Unfollow(ctx context.Context, followerId int64, followeeId int
 	return nil
 }
 
-func (r *account) Update(ctx context.Context, user *object.Account) (*object.Account, error) {
+func (r *account) Update(ctx context.Context, userId int64, dto dto.Credentials) (*object.Account, error) {
 	const (
-		update = `UPDATE account SET display_name = ?, avatar = ?, header = ?, note = ? WHERE id = ?`
+		confirm = `SELECT * FROM account WHERE id = ?`
 	)
+	update := `UPDATE account SET `
+	entity := new(object.Account)
+	args := make([]interface{}, 0, 5)
+	if len(dto.DisplayName) != 0 {
+		update += " display_name = ? "
+		args = append(args, dto.DisplayName)
+	}
+	if len(dto.Avatar) != 0 {
+		update += " , avatar = ? "
+		args = append(args, dto.Avatar)
+	}
+	if len(dto.Header) != 0 {
+		update += " , header = ? "
+		args = append(args, dto.Header)
+	}
+	if len(dto.Note) != 0 {
+		update += ", note = ? "
+		args = append(args, dto.Note)
+	}
+	update += " WHERE id = ?"
+	args = append(args, userId)
 
-	stmt, err := r.db.PrepareContext(ctx, update)
+	stmt, err := r.db.PreparexContext(ctx, update)
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.ExecContext(ctx, user.DisplayName, user.Avatar, user.Header, user.Note, user.ID)
+	_, err = stmt.ExecContext(ctx, stmt, args)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+
+	if err := r.db.QueryRowxContext(ctx, confirm, userId).StructScan(entity); err != nil {
+		return nil, err
+	}
+
+	return entity, nil
 }
