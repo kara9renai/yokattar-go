@@ -31,6 +31,7 @@ func (r *timeline) GetPublic(ctx context.Context, maxId int64, sinceId int64, li
 				account.id "account.id", 
 				account.username "account.username",
 				account.display_name "account.display_name",
+				account.avatar "account.avatar",
 				account.create_at "account.create_at"
 				FROM status
 				LEFT JOIN account ON
